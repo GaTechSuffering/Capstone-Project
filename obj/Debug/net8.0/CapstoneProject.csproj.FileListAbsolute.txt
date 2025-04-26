@@ -1,0 +1,14 @@
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\obj\Debug\net8.0\CapstoneProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\obj\Debug\net8.0\CapstoneProject.AssemblyInfoInputs.cache
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\obj\Debug\net8.0\CapstoneProject.AssemblyInfo.cs
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\obj\Debug\net8.0\CapstoneProject.csproj.CoreCompileInputs.cache
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\bin\Debug\net8.0\CapstoneProject.exe
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\bin\Debug\net8.0\CapstoneProject.deps.json
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\bin\Debug\net8.0\CapstoneProject.runtimeconfig.json
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\bin\Debug\net8.0\CapstoneProject.dll
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\bin\Debug\net8.0\CapstoneProject.pdb
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\obj\Debug\net8.0\CapstoneProject.dll
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\obj\Debug\net8.0\refint\CapstoneProject.dll
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\obj\Debug\net8.0\CapstoneProject.pdb
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\obj\Debug\net8.0\CapstoneProject.genruntimeconfig.cache
+C:\Users\tachr\Downloads\GradSchool\SSE 554\CapstoneProject\obj\Debug\net8.0\ref\CapstoneProject.dll
