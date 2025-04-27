@@ -9,6 +9,14 @@ namespace BookRentingApp
         public static List<Book> LoadBooksFromFile(string filePath)
         {
             var books = new List<Book>();
+            
+            //make sure the directory is set to the correct folder
+            string dir = Directory.GetCurrentDirectory();
+            if (dir.EndsWith("\\bin\\Debug\\net8.0"))
+            {
+                dir = dir.Remove(dir.Length-17);
+            }
+            Directory.SetCurrentDirectory(dir);
 
             if (!File.Exists(filePath))
             {
