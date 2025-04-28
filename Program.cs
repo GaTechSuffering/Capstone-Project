@@ -108,6 +108,67 @@ namespace BookRentingApp
             var owned = currSelect.OwnedBooks.ToList();
             SortBookList(owned);
             DisplayBookList(owned);
+
+            //check if they want to mark any of these books as completed and do so
+            Console.WriteLine("Would you like to mark a book as finished? (y/n): ");
+            if ((Console.ReadLine() ?? "").ToLower() == "y")
+            {
+                Console.WriteLine("Which book would you like to mark as finished? (enter [title] by [author]): ");
+                string[] finishedBook = (Console.ReadLine() ?? "").Split(" by ");
+                if (currSelect.OwnedBooks.Where(x => x.Author == finishedBook[1] && x.Title == finishedBook[0]).Count() == 1)
+                {
+                    foreach (Book b in currSelect.OwnedBooks)
+                    {
+                        if (b.Author == finishedBook[1] && b.Title == finishedBook[0])
+                        {
+                            if (currSelect.FirstName == "John")
+                            {
+                                ListUpdater.UpdateBookList(b, "ownedBooks_John.txt");
+                            }
+                            else if (currSelect.FirstName == "Jane")
+                            {
+                                ListUpdater.UpdateBookList(b, "ownedBooks_Jane.txt");
+                                Console.WriteLine("The book has been updated.");
+                            }
+                            b.IsRead = true;
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("The book entered was not valid.");
+                }
+            }
+
+            //check if they want to add to the list of owned books and do so
+            Console.WriteLine("Would you like to add a book to owned books? (y/n): ");
+            if ((Console.ReadLine() ?? "").ToLower() == "y")
+            {
+                Console.Write("Author: ");
+                string author = Console.ReadLine() ?? "";
+                Console.Write("Title: ");
+                string title = Console.ReadLine() ?? "";
+                Console.Write("Print Date (type 0 if you do not know): ");
+                string printDate = Console.ReadLine() ?? "";
+                Console.Write("Genre: ");
+                string genre = Console.ReadLine() ?? "";
+                Console.Write("Priority (1 is the highest): ");
+                int priority = int.Parse(Console.ReadLine() ?? "1");
+                Console.WriteLine("Popularity (1 to 10): ");
+                int popularity = int.Parse(Console.ReadLine() ?? "-1");
+                var newBook = new Book(author, title, printDate, genre, popularity, 1, priority, false);
+                if (currSelect.OwnedBooks.Where(x => x.Author == newBook.Author && x.Title == newBook.Title).Count() < 1)
+                {
+                    currSelect.OwnedBooks.Add(newBook);
+                    if (currSelect.FirstName == "John")
+                        ListUpdater.AddToBookList(newBook, "ownedBooks_John.txt");
+                    else if (currSelect.FirstName == "Jane")
+                        ListUpdater.AddToBookList(newBook, "ownedBooks_Jane.txt");
+                    Console.WriteLine("Book has been entered.");
+                }
+                else
+                    Console.WriteLine("The book is a duplicate.");
+            }
         }
 
         static void FinishedBooksMenu()
@@ -115,6 +176,36 @@ namespace BookRentingApp
             var finished = currSelect.OwnedBooks.Where(b => b.IsRead).ToList();
             SortBookList(finished);
             DisplayBookList(finished);
+
+            //check if they want to add to the list of owned books and do so
+            Console.WriteLine("Would you like to add a new book to finished books? (y/n): ");
+            if ((Console.ReadLine() ?? "").ToLower() == "y")
+            {
+                Console.Write("Author: ");
+                string author = Console.ReadLine() ?? "";
+                Console.Write("Title: ");
+                string title = Console.ReadLine() ?? "";
+                Console.Write("Print Date (type 0 if you do not know): ");
+                string printDate = Console.ReadLine() ?? "";
+                Console.Write("Genre: ");
+                string genre = Console.ReadLine() ?? "";
+                Console.Write("Priority (1 is the highest): ");
+                int priority = int.Parse(Console.ReadLine() ?? "1");
+                Console.WriteLine("Popularity (1 to 10): ");
+                int popularity = int.Parse(Console.ReadLine() ?? "-1");
+                var newBook = new Book(author, title, printDate, genre, popularity, 1, priority, true);
+                if (currSelect.OwnedBooks.Where(x => x.Author == newBook.Author && x.Title == newBook.Title).Count() < 1)
+                {
+                    currSelect.OwnedBooks.Add(newBook);
+                    if (currSelect.FirstName == "John")
+                        ListUpdater.AddToBookList(newBook, "ownedBooks_John.txt");
+                    else if (currSelect.FirstName == "Jane")
+                        ListUpdater.AddToBookList(newBook, "ownedBooks_Jane.txt");
+                    Console.WriteLine("Book has been entered.");
+                }
+                else
+                    Console.WriteLine("The book is a duplicate.");
+            }
         }
 
         static void WishlistBooksMenu()
@@ -142,7 +233,17 @@ namespace BookRentingApp
                 Console.Write("Priority (1 is the highest): ");
                 int priority = int.Parse(Console.ReadLine());
                 var newBook = new Book(author, title, printDate, genre, -1, -1, priority, false);
-                currUser.Wishlist.Add(newBook);
+                if (currSelect.OwnedBooks.Where(x => x.Author == newBook.Author && x.Title == newBook.Title).Count() < 1)
+                {
+                    currUser.Wishlist.Add(newBook);
+                    if (currSelect.FirstName == "John")
+                        ListUpdater.AddToBookList(newBook, "wishlistBooks_John.txt");
+                    else if (currSelect.FirstName == "Jane")
+                        ListUpdater.AddToBookList(newBook, "wishlistBooks_Jane.txt");
+                    Console.WriteLine("Book has been entered.");
+                }
+                else
+                    Console.WriteLine("The book is a duplicate.");
             }
         }
 
