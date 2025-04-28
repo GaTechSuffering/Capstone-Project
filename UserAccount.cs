@@ -51,5 +51,16 @@ namespace BookRentingApp
                 Console.WriteLine(new string('-', 40));
             }
         }
+
+        public override string ToString()
+        {
+            string member = "no";
+            if (IsMember) 
+                member = "yes";
+
+            return $"Name: {FirstName} {LastName}, Age: {Age}, " +
+                $"Member: {member}, Member Price: ${MemberPrice}, " +
+                $"Owned Books: {OwnedBooks.Count}, Wishlist: {Wishlist.Count}";
+        }
     }
 }

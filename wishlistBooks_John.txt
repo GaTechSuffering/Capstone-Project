@@ -1,0 +1,10 @@
+Tolkien J.R.R.;The Lord of the Rings;1954;Fantasy;10;3;1;true
+Rowling J.K.;Harry Potter and the Sorcerer's Stone;1997;Fantasy;10;5;2;true
+Lee Harper;To Kill a Mockingbird;1960;Drama;9;2;3;true
+Orwell George;1984;1949;Dystopian;9;1;4;true
+Fitzgerald F. Scott;The Great Gatsby;1925;Classic;9;2;5;true
+Austen Jane;Pride and Prejudice;1813;Romance;8;2;6;false
+Salinger J.D.;The Catcher in the Rye;1951;Fiction;8;1;7;false
+Tolkien J.R.R.;The Hobbit;1937;Fantasy;10;3;8;true
+Bradbury Ray;Fahrenheit 451;1953;Science Fiction;8;1;9;false
+Melville Herman;Moby Dick;1851;Adventure;7;1;10;false

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tachr\\Downloads\\GradSchool\\SSE 554\\CapstoneProject\\CapstoneProject.csproj": {}
+    "C:\\Users\\tachr\\Downloads\\GradSchool\\SSE 554\\CapstoneProject\\Capstone-Project\\CapstoneProject.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tachr\\Downloads\\GradSchool\\SSE 554\\CapstoneProject\\CapstoneProject.csproj": {
+    "C:\\Users\\tachr\\Downloads\\GradSchool\\SSE 554\\CapstoneProject\\Capstone-Project\\CapstoneProject.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tachr\\Downloads\\GradSchool\\SSE 554\\CapstoneProject\\CapstoneProject.csproj",
+        "projectUniqueName": "C:\\Users\\tachr\\Downloads\\GradSchool\\SSE 554\\CapstoneProject\\Capstone-Project\\CapstoneProject.csproj",
         "projectName": "CapstoneProject",
-        "projectPath": "C:\\Users\\tachr\\Downloads\\GradSchool\\SSE 554\\CapstoneProject\\CapstoneProject.csproj",
+        "projectPath": "C:\\Users\\tachr\\Downloads\\GradSchool\\SSE 554\\CapstoneProject\\Capstone-Project\\CapstoneProject.csproj",
         "packagesPath": "C:\\Users\\tachr\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tachr\\Downloads\\GradSchool\\SSE 554\\CapstoneProject\\obj\\",
+        "outputPath": "C:\\Users\\tachr\\Downloads\\GradSchool\\SSE 554\\CapstoneProject\\Capstone-Project\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
