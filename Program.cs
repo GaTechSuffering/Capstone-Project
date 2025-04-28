@@ -189,7 +189,7 @@ namespace BookRentingApp
             if (sort == "1")
                 QuickSort.SortBooks(sortList, "Title");
             else if (sort == "2")
-                 QuickSort.SortBooks(sortList, "Author");
+                sortList = sortList.OrderBy(b => b.Author).ToList();
 
             Console.WriteLine("Order: 1) Ascending 2) Descending");
             string order = Console.ReadLine();
