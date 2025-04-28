@@ -73,7 +73,8 @@ namespace BookRentingApp
 
         static void WishlistBooksMenu()
         {
-            var wishlist = currUser.Wishlist.OrderBy(b => b.Priority).ToList();
+            var wishlist = currUser.Wishlist;
+            QuickSort.SortBooks(wishlist, "Priority");
             
             Console.WriteLine("Would you like to order this list by title or author? (y/n)");
             if (Console.ReadLine().ToLower() == "y")
@@ -139,9 +140,9 @@ namespace BookRentingApp
             string sort = Console.ReadLine();
 
             if (sort == "1")
-                sortList = sortList.OrderBy(b => b.Title).ToList();
+                QuickSort.SortBooks(sortList, "Title");
             else if (sort == "2")
-                sortList = sortList.OrderBy(b => b.Author).ToList();
+                QuickSort.SortBooks(sortList, "Author");
 
             Console.WriteLine("Order: 1) Ascending 2) Descending");
             string order = Console.ReadLine();

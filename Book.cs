@@ -1,9 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace BookRentingApp
 {
-    public class Book
+    public class Book: IComparable
     {
         // Properties
         public string Author { get; set; }
@@ -42,6 +43,58 @@ namespace BookRentingApp
             Console.WriteLine($"Popularity: {Popularity}");
             Console.WriteLine($"Available Copies: {NumBooks}");
             Console.WriteLine($"Priority in Queue: {Priority}");
+        }
+
+        //IComparable CompareTo Implementation
+        //Check if the books exactly match or order by author then title if they do not
+        public int CompareTo(object? obj)
+        {
+            if (obj == null)
+                return -1;
+
+            Book b = (Book)obj;
+
+            if (Author == b.Author && Title == b.Title && PrintDate == b.PrintDate && Genre == b.Genre
+            && Popularity == b.Popularity && NumBooks == b.NumBooks && Priority == b.Priority && IsRead == b.IsRead)
+                return 0;
+            else
+            {
+                int retVal = Author.CompareTo(b.Author);
+                if (retVal == 0)
+                    retVal = Title.CompareTo(b.Title);
+                return retVal;
+            }
+        }
+
+        //Implement CompareTo that accepts a sort value to compare the books with
+        public int CompareTo(object? obj, string sortValue)
+        {
+            if (obj == null)
+                return -1;
+
+            Book b = (Book)obj;
+
+            switch (sortValue)
+            {
+                case "Author":
+                    return Author.CompareTo(b.Author);
+                case "Title":
+                    return Title.CompareTo(b.Title);
+                case "PrintDate":
+                    return PrintDate.CompareTo(b.PrintDate);
+                case "Genre":
+                    return Genre.CompareTo(b.Genre);
+                case "Popularity":
+                    return Popularity.CompareTo(b.Popularity);
+                case "NumBooks":
+                    return NumBooks.CompareTo(b.NumBooks);
+                case "Priority":
+                    return Priority.CompareTo(b.Priority);
+                case "IsRead":
+                    return IsRead.CompareTo(b.IsRead);
+                default:
+                    return Title.CompareTo(b.Title);
+            }
         }
     }
 }
