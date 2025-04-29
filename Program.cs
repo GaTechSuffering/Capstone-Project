@@ -7,7 +7,7 @@ namespace BookRentingApp
     class Program
     {
         static BookManager bookManager = new BookManager();
-        static UserAccount currUser, currSelect;
+        static UserAccount? currUser, currSelect;
         static Dictionary <string, UserAccount> rentalSystem = new Dictionary <string, UserAccount>();
 
         static void Main(string[] args)
@@ -43,6 +43,7 @@ namespace BookRentingApp
             // Force the user to select an account first 
             SelectUser();
 
+            // Loop through main menu until user selects "Exit"
             while (true)
             {
                 Console.WriteLine("\nMain Menu:");
@@ -55,7 +56,7 @@ namespace BookRentingApp
                 Console.WriteLine("0. Exit");
 
                 Console.Write("Choose an option: ");
-                string input = Console.ReadLine();
+                string input = Console.ReadLine() ?? "";
 
                 switch (input)
                 {
@@ -71,6 +72,7 @@ namespace BookRentingApp
             }
         }
 
+        // Selects the user from the current dictionary (rental system)
         static void SelectUser()
         {
             Console.WriteLine("Which user are you trying to access?");
@@ -88,7 +90,7 @@ namespace BookRentingApp
             while (true)
             {
                 Console.Write("\nEnter a valid username: ");
-                inputUsername = Console.ReadLine();
+                inputUsername = Console.ReadLine() ?? "";
     
                 if (rentalSystem.ContainsKey(inputUsername))
                 {
@@ -97,165 +99,102 @@ namespace BookRentingApp
                     break;
                 }
                 else
-                {
                     Console.WriteLine("Invalid username. Please try again.");
-                }
             }
         }
 
+        // Display the list of owned books to the currently selected user
         static void OwnedBooksMenu()
         {
-            var owned = currSelect.OwnedBooks.ToList();
-            SortBookList(owned);
-            DisplayBookList(owned);
-
-            //check if they want to mark any of these books as completed and do so
-            Console.WriteLine("Would you like to mark a book as finished? (y/n): ");
-            if ((Console.ReadLine() ?? "").ToLower() == "y")
+            if (currSelect != null)
             {
-                Console.WriteLine("Which book would you like to mark as finished? (enter [title] by [author]): ");
-                string[] finishedBook = (Console.ReadLine() ?? "").Split(" by ");
-                if (currSelect.OwnedBooks.Where(x => x.Author == finishedBook[1] && x.Title == finishedBook[0]).Count() == 1)
+                var owned = currSelect.OwnedBooks.ToList();
+                SortBookList(owned);
+                DisplayBookList(owned);
+
+                // Check if they want to mark any of these books as completed and do so
+                Console.WriteLine("Would you like to mark a book as finished? (y/n): ");
+
+                if ((Console.ReadLine() ?? "").ToLower() == "y")
                 {
-                    foreach (Book b in currSelect.OwnedBooks)
+                    Console.WriteLine("Which book would you like to mark as finished? (enter [title] by [author]): ");
+                    string[] finishedBook = (Console.ReadLine() ?? "").Split(" by ");
+
+                    if (currSelect.OwnedBooks.Where(x => x.Author == finishedBook[1] && x.Title == finishedBook[0]).Count() == 1)
                     {
-                        if (b.Author == finishedBook[1] && b.Title == finishedBook[0])
+                        foreach (Book b in currSelect.OwnedBooks)
                         {
-                            if (currSelect.FirstName == "John")
+                            if (b.Author == finishedBook[1] && b.Title == finishedBook[0])
                             {
-                                ListUpdater.UpdateBookList(b, "ownedBooks_John.txt");
-                            }
-                            else if (currSelect.FirstName == "Jane")
-                            {
-                                ListUpdater.UpdateBookList(b, "ownedBooks_Jane.txt");
+                                if (currSelect.FirstName == "John")
+                                    ListUpdater.UpdateBookList(b, "ownedBooks_John.txt");
+                                else if (currSelect.FirstName == "Jane")
+                                    ListUpdater.UpdateBookList(b, "ownedBooks_Jane.txt");
+
                                 Console.WriteLine("The book has been updated.");
+                                b.IsRead = true;
                             }
-                            b.IsRead = true;
                         }
                     }
+                    else
+                        Console.WriteLine("The book entered was not valid.");
                 }
-                else
-                {
-                    Console.WriteLine("The book entered was not valid.");
-                }
-            }
 
-            //check if they want to add to the list of owned books and do so
-            Console.WriteLine("Would you like to add a book to owned books? (y/n): ");
-            if ((Console.ReadLine() ?? "").ToLower() == "y")
-            {
-                Console.Write("Author: ");
-                string author = Console.ReadLine() ?? "";
-                Console.Write("Title: ");
-                string title = Console.ReadLine() ?? "";
-                Console.Write("Print Date (type 0 if you do not know): ");
-                string printDate = Console.ReadLine() ?? "";
-                Console.Write("Genre: ");
-                string genre = Console.ReadLine() ?? "";
-                Console.Write("Priority (1 is the highest): ");
-                int priority = int.Parse(Console.ReadLine() ?? "1");
-                Console.WriteLine("Popularity (1 to 10): ");
-                int popularity = int.Parse(Console.ReadLine() ?? "-1");
-                var newBook = new Book(author, title, printDate, genre, popularity, 1, priority, false);
-                if (currSelect.OwnedBooks.Where(x => x.Author == newBook.Author && x.Title == newBook.Title).Count() < 1)
-                {
-                    currSelect.OwnedBooks.Add(newBook);
-                    if (currSelect.FirstName == "John")
-                        ListUpdater.AddToBookList(newBook, "ownedBooks_John.txt");
-                    else if (currSelect.FirstName == "Jane")
-                        ListUpdater.AddToBookList(newBook, "ownedBooks_Jane.txt");
-                    Console.WriteLine("Book has been entered.");
-                }
-                else
-                    Console.WriteLine("The book is a duplicate.");
-            }
+                // Check if they want to add to the list of owned books and do so
+                Console.WriteLine("Would you like to add a book to owned books? (y/n): ");
+                AddBook("owned", false);
+            } 
+            else 
+                Console.WriteLine("No user is currently selected.");
         }
 
+        // Display the list of finished books to the currently selected user
         static void FinishedBooksMenu()
         {
-            var finished = currSelect.OwnedBooks.Where(b => b.IsRead).ToList();
-            SortBookList(finished);
-            DisplayBookList(finished);
-
-            //check if they want to add to the list of owned books and do so
-            Console.WriteLine("Would you like to add a new book to finished books? (y/n): ");
-            if ((Console.ReadLine() ?? "").ToLower() == "y")
+            if (currSelect != null)
             {
-                Console.Write("Author: ");
-                string author = Console.ReadLine() ?? "";
-                Console.Write("Title: ");
-                string title = Console.ReadLine() ?? "";
-                Console.Write("Print Date (type 0 if you do not know): ");
-                string printDate = Console.ReadLine() ?? "";
-                Console.Write("Genre: ");
-                string genre = Console.ReadLine() ?? "";
-                Console.Write("Priority (1 is the highest): ");
-                int priority = int.Parse(Console.ReadLine() ?? "1");
-                Console.WriteLine("Popularity (1 to 10): ");
-                int popularity = int.Parse(Console.ReadLine() ?? "-1");
-                var newBook = new Book(author, title, printDate, genre, popularity, 1, priority, true);
-                if (currSelect.OwnedBooks.Where(x => x.Author == newBook.Author && x.Title == newBook.Title).Count() < 1)
-                {
-                    currSelect.OwnedBooks.Add(newBook);
-                    if (currSelect.FirstName == "John")
-                        ListUpdater.AddToBookList(newBook, "ownedBooks_John.txt");
-                    else if (currSelect.FirstName == "Jane")
-                        ListUpdater.AddToBookList(newBook, "ownedBooks_Jane.txt");
-                    Console.WriteLine("Book has been entered.");
-                }
-                else
-                    Console.WriteLine("The book is a duplicate.");
-            }
+                var finished = currSelect.OwnedBooks.Where(b => b.IsRead).ToList();
+                SortBookList(finished);
+                DisplayBookList(finished);
+
+                // Check if they want to add to the list of owned books and do so
+                Console.WriteLine("Would you like to add a new book to finished books? (y/n): ");
+                AddBook("owned", true);
+            } 
+            else
+                Console.WriteLine("No user is currently selected.");
         }
 
+        // Display the list of wishlisted books to the currently selected user
         static void WishlistBooksMenu()
         {
-            var wishlist = currUser.Wishlist;
-            QuickSort.SortBooks(wishlist, "Priority");
-            
-            Console.WriteLine("Would you like to order this list by title or author? (y/n)");
-            if (Console.ReadLine().ToLower() == "y")
-                SortBookList(wishlist);
-            
-            DisplayBookList(wishlist);
-
-            Console.Write("Would you like to add a book to your wishlist? (y/n): ");
-            if (Console.ReadLine().ToLower() == "y")
+            if (currSelect != null)
             {
-                Console.Write("Author: ");
-                string author = Console.ReadLine();
-                Console.Write("Title: ");
-                string title = Console.ReadLine();
-                Console.Write("Print Date (type 0 if you do not know): ");
-                string printDate = Console.ReadLine();
-                Console.Write("Genre: ");
-                string genre = Console.ReadLine();
-                Console.Write("Priority (1 is the highest): ");
-                int priority = int.Parse(Console.ReadLine());
-                var newBook = new Book(author, title, printDate, genre, -1, -1, priority, false);
-                if (currSelect.OwnedBooks.Where(x => x.Author == newBook.Author && x.Title == newBook.Title).Count() < 1)
-                {
-                    currUser.Wishlist.Add(newBook);
-                    if (currSelect.FirstName == "John")
-                        ListUpdater.AddToBookList(newBook, "wishlistBooks_John.txt");
-                    else if (currSelect.FirstName == "Jane")
-                        ListUpdater.AddToBookList(newBook, "wishlistBooks_Jane.txt");
-                    Console.WriteLine("Book has been entered.");
+                var wishlist = currSelect.Wishlist;
+                QuickSort.SortBooks(wishlist, "Priority");
+
+                Console.WriteLine("Would you like to order this list by title or author? (y/n)");
+                if (Console.ReadLine()?.ToLower() == "y")
+                    SortBookList(wishlist);
+
+                DisplayBookList(wishlist);
+
+                Console.Write("Would you like to add a book to your wishlist? (y/n): ");
+                AddBook("wishlist", false);
                 }
-                else
-                    Console.WriteLine("The book is a duplicate.");
-            }
+            else 
+                Console.WriteLine("No user is currently selected.");
         }
 
         static void RentBooksMenu()
         {
             Console.Write("Enter book title to rent: ");
-            string title = Console.ReadLine();
+            string title = Console.ReadLine() ?? "";
             Console.Write("How many days?: ");
-            int days = int.Parse(Console.ReadLine());
+            int days = int.Parse(Console.ReadLine() ?? "");
 
             // Members get priority
-            if (currUser.IsMember)
+            if (currSelect != null && currSelect.IsMember)
                 Console.WriteLine("Congratulations, you're a member! You are renting with priority access.");
             else
                 Console.WriteLine("You're a guest. Renting will be based on availability.");
@@ -263,13 +202,15 @@ namespace BookRentingApp
             bookManager.RentBook(title, days);
         }
 
-        static void ShowRecommendations(TreeNode node)
+        static void ShowRecommendations(TreeNode node_)
         {
-            while (!node.IsLeaf)
+            TreeNode? node = node_;
+            
+            while (node != null && !node.IsLeaf)
             {
                 Console.WriteLine(node.Question + " (y/n)");
 
-                string answer = Console.ReadLine()?.Trim().ToLower();
+                string answer = Console.ReadLine()?.Trim().ToLower() ?? "";
 
                 if (answer == "y" || answer == "yes")
                     node = node.YesChild;
@@ -279,13 +220,14 @@ namespace BookRentingApp
                     Console.WriteLine("Please answer with 'y' or 'n' (or 'yes' / 'no').");
             }
 
-            Console.WriteLine($"\nWe recommend: {node.Recommendation}");
+            if (node?.Recommendation != null)
+                Console.WriteLine($"\nWe recommend: {node.Recommendation}");
         }
 
         // Helper function to sort/organise the list of books
         static void SortBookList(List<Book> sortList) {
             Console.WriteLine("Sort by: 1) Title 2) Author");
-            string sort = Console.ReadLine();
+            string sort = Console.ReadLine() ?? "";
 
             if (sort == "1")
                 QuickSort.SortBooks(sortList, "Title");
@@ -293,16 +235,68 @@ namespace BookRentingApp
                 sortList = sortList.OrderBy(b => b.Author).ToList();
 
             Console.WriteLine("Order: 1) Ascending 2) Descending");
-            string order = Console.ReadLine();
+            string order = Console.ReadLine() ?? "";
             if (order == "2")
                 sortList.Reverse();
+        }
+
+        // Helper function to add books to the current list
+        static void AddBook(string list, bool isRead) 
+        {
+            if ((Console.ReadLine() ?? "").ToLower() == "y")
+            {
+                Console.Write("Author: ");
+                string author = Console.ReadLine() ?? "";
+                Console.Write("Title: ");
+                string title = Console.ReadLine() ?? "";
+                Console.Write("Print Date (type 0 if you do not know): ");
+                string printDate = Console.ReadLine() ?? "";
+                Console.Write("Genre: ");
+                string genre = Console.ReadLine() ?? "";
+                Console.Write("Priority (1 is the highest): ");
+                int priority = int.Parse(Console.ReadLine() ?? "-1");
+                Console.WriteLine("Popularity (1 to 10): ");
+                int popularity = int.Parse(Console.ReadLine() ?? "-1");
+
+                var newBook = new Book(author, title, printDate, genre, popularity, -1, priority, isRead);
+
+                if (currSelect != null && currSelect.OwnedBooks.Where(x => x.Author == newBook.Author && x.Title == newBook.Title).Count() < 1)
+                {
+                    if (list == "owned") 
+                    {
+                       currSelect.OwnedBooks.Add(newBook);
+                        if (currSelect.FirstName == "John")
+                            ListUpdater.AddToBookList(newBook, "ownedBooks_John.txt");
+                        else if (currSelect.FirstName == "Jane")
+                            ListUpdater.AddToBookList(newBook, "ownedBooks_Jane.txt");
+                        Console.WriteLine("Book has been entered.");
+                    }
+                    else if (list == "wishlist")
+                    { 
+                        currSelect.Wishlist.Add(newBook);
+                        if (currSelect.FirstName == "John")
+                            ListUpdater.AddToBookList(newBook, "wishlistBooks_John.txt");
+                        else if (currSelect.FirstName == "Jane")
+                            ListUpdater.AddToBookList(newBook, "wishlistBooks_Jane.txt");
+                        Console.WriteLine("Book has been entered.");
+                    }
+                }
+                else
+                    Console.WriteLine("The book is a duplicate.");
+            }
         }
 
         // Helper function to display the list of books
         static void DisplayBookList(List<Book> books)
         {
-            foreach (var book in books)
-                Console.WriteLine($"☐ {book.Title} by {string.Join(", ", book.Author)} \n\tGenre: {book.Genre} \n\tPopularity: {book.Popularity}");
+            string isRead = "no";
+            foreach (var book in books) {
+                if (book.IsRead) 
+                    isRead = "yes";
+                else 
+                    isRead = "no";
+                Console.WriteLine($"☐ {book.Title} by {string.Join(", ", book.Author)} \n\tGenre: {book.Genre} \n\tPopularity: {book.Popularity}\n\tFinished: {isRead}");
+            }
         }
 
         // Helper function to build the tree for recommendations
