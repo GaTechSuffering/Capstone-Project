@@ -9,6 +9,7 @@ namespace BookRentingApp
         static BookManager bookManager = new BookManager();
         static UserAccount? currUser, currSelect;
         static Dictionary <string, UserAccount> rentalSystem = new Dictionary <string, UserAccount>();
+        static BookRelationshipGraph bookRelationships = new BookRelationshipGraph();
 
         static void Main(string[] args)
         {
@@ -196,6 +197,48 @@ namespace BookRentingApp
 
                 if (response == "y")
                     AddBook("owned", true);
+
+                //Check if they want to get a recommendation based on a finished book
+                do
+                {
+                    Console.WriteLine("Would you like a recommendation based on a book? (y/n):");
+                    response = (Console.ReadLine() ?? "").Trim().ToLower();
+                } while (response != "y" && response != "n");
+                if (response == "y")
+                {
+                    //Check what book they want a recommendation from
+                    Console.WriteLine("What book do you want a recommendation based on? ([Title]:[Author]):");
+                    string[] b = (Console.ReadLine() ?? "").Split(":");
+                    if (b.Length == 2)
+                    {
+                        //get recommendations based off of the book relationship graph
+                        var recs = bookRelationships.bookRelationshipGraph.GetEdges().Where(x =>x.From.Data?.Title == b[0] &&  x.From.Data.Author == b[1]).OrderByDescending(x => x.Weight).ToList();
+                        if (recs.Count > 0)
+                        {
+                            int recId = 0;
+                            while (recId != recs.Count)
+                            {
+                                Console.WriteLine($"☐ {recs[recId].To.Data?.Title} by {string.Join(", ", recs[recId].To.Data?.Author)} \n\tGenre: {recs[recId].To.Data?.Genre} \n\tPopularity: {recs[recId].To.Data?.Popularity}");
+                                recId++;
+                                if (recId != recs.Count)
+                                {
+                                    do
+                                    {
+                                        Console.WriteLine("Would you like another recommendation? (y/n):");
+                                        response = (Console.ReadLine() ?? "").Trim().ToLower();
+                                    } while (response != "y" && response != "n");
+                                    if (response == "n")
+                                        break;
+                                    
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No recommendations could be made based on this book.");
+                        }
+                    }
+                }
             } 
             else
                 Console.WriteLine("No user is currently selected.");

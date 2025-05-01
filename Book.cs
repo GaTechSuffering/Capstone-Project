@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BookRentingApp
 {
-    public class Book: IComparable
+    public class Book: IComparable, IEquatable<Book>
     {
         // Properties
         public string Author { get; set; }
@@ -95,6 +95,27 @@ namespace BookRentingApp
                 default:
                     return Title.CompareTo(b.Title);
             }
+        }
+
+        //override equals to return if two books are equal by comparing the author, title and print date
+        public override bool Equals(Object? other)
+        {
+            if (other == null || !(other is Book))
+                return false;
+            Book? obj = (Book?)other;
+            return obj != null && Author == obj.Author && Title == obj.Title && PrintDate == obj.PrintDate;
+        }
+
+        //implement equals to return if two books are equal by comparing author, title, and print date
+        public bool Equals(Book? obj)
+        {
+            return obj != null && Author == obj.Author && Title == obj.Title && PrintDate == obj.PrintDate;
+        }
+
+        //override gethashcode to return a hashcode for the book based on the title and author
+        public override int GetHashCode()
+        {
+            return (Title + Author).GetHashCode();
         }
     }
 }
