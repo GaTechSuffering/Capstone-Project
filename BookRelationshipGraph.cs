@@ -15,10 +15,10 @@ namespace BookRentingApp
             test.Add(new Book("b", "b", "2", "a", 0, 0, 0, false));
             test.Add(new Book("a", "a", "1", "a", 0, 0, 0, false));
 
-            foreach(var x in test)
-            {
-                Console.WriteLine(x);
-            }
+            // foreach(var x in test)
+            // {
+            //     Console.WriteLine(x);
+            // }
 
             //testin hashset end
 
@@ -40,7 +40,7 @@ namespace BookRentingApp
             //add all books to the graph
             foreach (Book b in allBooks)
             {
-                Console.WriteLine(b.Title + " " + b.Author + " " + b.PrintDate + " " + b.Genre);
+                //Console.WriteLine(b.Title + " " + b.Author + " " + b.PrintDate + " " + b.Genre);
                 bookRelationshipGraph.AddNode(b);
             }
 

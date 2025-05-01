@@ -20,19 +20,21 @@ namespace BookRentingApp
             // Set up two dummy accounts for the rentalSystem
             List<Book> ownedBooks = BookLoader.LoadBooksFromFile("ownedBooks_John.txt");
             List<Book> wishlistBooks = BookLoader.LoadBooksFromFile("wishListBooks_John.txt");
-            currUser = new UserAccount("John", "Doe", 29, true, 10, ownedBooks, wishlistBooks);
+            List<Book> rentedBooks = new List<Book> ();
+            currUser = new UserAccount("John", "Doe", 29, true, 10, ownedBooks, wishlistBooks, rentedBooks);
             // Assign to user's owned books
             currUser.OwnedBooks.AddRange(ownedBooks);
             // Assign to user's wishlisted books
             currUser.Wishlist.AddRange(wishlistBooks);
             string userName = "JohnnyBoy";
 
+            // Add user to the rental system
             rentalSystem.Add(userName, currUser);
 
             // Secondary dummy account
             ownedBooks = BookLoader.LoadBooksFromFile("ownedBooks_Jane.txt");
             wishlistBooks = BookLoader.LoadBooksFromFile("wishListBooks_Jane.txt");
-            currUser = new UserAccount("Jane", "Darling", 25, false, 0, ownedBooks, wishlistBooks);
+            currUser = new UserAccount("Jane", "Darling", 25, false, 0, ownedBooks, wishlistBooks, rentedBooks);
             // Assign to user's owned books
             currUser.OwnedBooks.AddRange(ownedBooks);
             // Assign to user's wishlisted books
@@ -49,11 +51,12 @@ namespace BookRentingApp
             {
                 Console.WriteLine("\nMain Menu:");
                 Console.WriteLine("1. Select User");
-                Console.WriteLine("2. Owned Books");
-                Console.WriteLine("3. Finished Books");
-                Console.WriteLine("4. Wishlist Books");
-                Console.WriteLine("5. Rent Books");
-                Console.WriteLine("6. Recommendations");
+                Console.WriteLine("2. Display User Information");
+                Console.WriteLine("3. Owned Books");
+                Console.WriteLine("4. Finished Books");
+                Console.WriteLine("5. Wishlist Books");
+                Console.WriteLine("6. Rent Books");
+                Console.WriteLine("7. Recommendations");
                 Console.WriteLine("0. Exit");
 
                 Console.Write("Choose an option: ");
@@ -62,11 +65,12 @@ namespace BookRentingApp
                 switch (input)
                 {
                     case "1": SelectUser(); break;
-                    case "2": OwnedBooksMenu(); break;
-                    case "3": FinishedBooksMenu();  break;
-                    case "4": WishlistBooksMenu(); break;
-                    case "5": RentBooksMenu(); break;
-                    case "6": ShowRecommendations(node); break;
+                    case "2": DisplayUser(); break;
+                    case "3": OwnedBooksMenu(); break;
+                    case "4": FinishedBooksMenu();  break;
+                    case "5": WishlistBooksMenu(); break;
+                    case "6": RentBooksMenu(); break;
+                    case "7": ShowRecommendations(node); break;
                     case "0": return;
                     default: Console.WriteLine("Invalid choice."); break;
                 }
@@ -85,7 +89,7 @@ namespace BookRentingApp
             }
     
             foreach (KeyValuePair<string, UserAccount> user in rentalSystem)
-                Console.WriteLine($"☐ Username: \"{user.Key}\" \n  User Information: \n\t{user.Value}");
+                Console.WriteLine($"☐  Username: \"{user.Key}\" \n   User Information: \n\t{user.Value}");
     
             string inputUsername;
             while (true)
@@ -97,11 +101,16 @@ namespace BookRentingApp
                 {
                     Console.WriteLine("User " + inputUsername + " selected!");
                     currSelect = rentalSystem[inputUsername];
+                    UserQueueManager.EnqueueUser(currSelect);
                     break;
                 }
                 else
                     Console.WriteLine("Invalid username. Please try again.");
             }
+        }
+        
+        static void DisplayUser() {
+            currSelect.DisplayInfo();
         }
 
         // Display the list of owned books to the currently selected user
@@ -197,48 +206,6 @@ namespace BookRentingApp
 
                 if (response == "y")
                     AddBook("owned", true);
-
-                //Check if they want to get a recommendation based on a finished book
-                do
-                {
-                    Console.WriteLine("Would you like a recommendation based on a book? (y/n):");
-                    response = (Console.ReadLine() ?? "").Trim().ToLower();
-                } while (response != "y" && response != "n");
-                if (response == "y")
-                {
-                    //Check what book they want a recommendation from
-                    Console.WriteLine("What book do you want a recommendation based on? ([Title]:[Author]):");
-                    string[] b = (Console.ReadLine() ?? "").Split(":");
-                    if (b.Length == 2)
-                    {
-                        //get recommendations based off of the book relationship graph
-                        var recs = bookRelationships.bookRelationshipGraph.GetEdges().Where(x =>x.From.Data?.Title == b[0] &&  x.From.Data.Author == b[1]).OrderByDescending(x => x.Weight).ToList();
-                        if (recs.Count > 0)
-                        {
-                            int recId = 0;
-                            while (recId != recs.Count)
-                            {
-                                Console.WriteLine($"☐ {recs[recId].To.Data?.Title} by {string.Join(", ", recs[recId].To.Data?.Author)} \n\tGenre: {recs[recId].To.Data?.Genre} \n\tPopularity: {recs[recId].To.Data?.Popularity}");
-                                recId++;
-                                if (recId != recs.Count)
-                                {
-                                    do
-                                    {
-                                        Console.WriteLine("Would you like another recommendation? (y/n):");
-                                        response = (Console.ReadLine() ?? "").Trim().ToLower();
-                                    } while (response != "y" && response != "n");
-                                    if (response == "n")
-                                        break;
-                                    
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("No recommendations could be made based on this book.");
-                        }
-                    }
-                }
             } 
             else
                 Console.WriteLine("No user is currently selected.");
@@ -274,19 +241,23 @@ namespace BookRentingApp
 
         static void RentBooksMenu()
         {
-            Console.Write("Enter book title to rent: ");
-            string title = Console.ReadLine() ?? "";
-            Console.Write("How many days?: ");
-            int days = int.Parse(Console.ReadLine() ?? "");
+            // Get the next user in queue
+            currSelect = UserQueueManager.DequeueUser();
 
-            // Members get priority
-            if (currSelect != null && currSelect.IsMember)
-                Console.WriteLine("Congratulations, you're a member! You are renting with priority access.");
-            else
-                Console.WriteLine("You're a guest. Renting will be based on availability.");
+            if (Program.currSelect == null)
+            {
+                Console.WriteLine("No users in the queue.");
+                return;
+            }
 
-            bookManager.RentBook(title, days);
+            Console.WriteLine($"Serving: {Program.currSelect.FirstName} {Program.currSelect.LastName}");
+
+            Console.WriteLine("Please enter book information below: ");
+            AddBook("rented", false);
+            
+            UserQueueManager.EnqueueUser(currSelect);
         }
+
 
         static void ShowRecommendations(TreeNode node_)
         {
@@ -308,13 +279,25 @@ namespace BookRentingApp
 
             if (node?.Recommendation != null)
                 Console.WriteLine($"\nWe recommend: {node.Recommendation}");
+
+            // Check if they want to get a recommendation based on the previous suggested book
+            string response;
+            do
+            {
+                Console.WriteLine("Would you like a recommendation based on a book of your choosing? (y/n):");
+                response = (Console.ReadLine() ?? "").Trim().ToLower();
+            } while (response != "y" && response != "n");
+            
+            if (response == "y")
+            {
+                GraphRecommendation();
+            }
         }
 
         // Helper function to sort/organise the list of books
         static void SortBookList(List<Book> sortList) 
         {
             string sort, order;
-
             do 
             {
                 Console.WriteLine("Sort by: 1) Title 2) Author");
@@ -352,6 +335,7 @@ namespace BookRentingApp
             Console.WriteLine("Popularity (1 to 10): ");
             int popularity = int.Parse(Console.ReadLine() ?? "-1");
             var newBook = new Book(author, title, printDate, genre, popularity, -1, priority, isRead);
+
             if (currSelect != null && currSelect.OwnedBooks.Where(x => x.Author == newBook.Author && x.Title == newBook.Title).Count() < 1)
             {
                 if (list == "owned") 
@@ -372,6 +356,37 @@ namespace BookRentingApp
                         ListUpdater.AddToBookList(newBook, "wishlistBooks_Jane.txt");
                     Console.WriteLine("Book has been entered.");
                 }
+                else if (list == "rented") 
+                {
+                    if (!currSelect.Rented.Any(b => b.Title == newBook.Title && b.Author == newBook.Author))
+                    {
+                        currSelect.Rented.Add(newBook);
+
+                        Console.Write("How many days are you renting this book for?: ");
+                        if (!int.TryParse(Console.ReadLine(), out int days))
+                        {
+                            Console.WriteLine("Invalid number of days.");
+                            return;
+                        }
+            
+                        // Check membership status and inform user
+                        if (currSelect.IsMember)
+                            Console.WriteLine("Congratulations, you're a member! You are renting with priority access.");
+                        else
+                            Console.WriteLine("You're a guest. Renting will be based on availability.");
+            
+                        bookManager.RentBook(currSelect, days);
+
+                        if (currSelect.FirstName == "John")
+                            ListUpdater.AddToBookList(newBook, "rentedBooks_John.txt");
+                        else if (currSelect.FirstName == "Jane")
+                            ListUpdater.AddToBookList(newBook, "rentedBooks_Jane.txt");
+
+                        Console.WriteLine("Book has been entered.");
+                    }
+                    else
+                        Console.WriteLine("This book is already in the user's rented list.");
+                }
             }
             else
                 Console.WriteLine("The book is a duplicate.");
@@ -381,7 +396,8 @@ namespace BookRentingApp
         static void DisplayBookList(List<Book> books)
         {
             string isRead = "no";
-            foreach (var book in books) {
+            foreach (var book in books) 
+            {
                 if (book.IsRead) 
                     isRead = "yes";
                 else 
@@ -389,6 +405,45 @@ namespace BookRentingApp
                 Console.WriteLine($"☐ {book.Title} by {string.Join(", ", book.Author)} \n\tGenre: {book.Genre} \n\tPopularity: {book.Popularity}\n\tFinished: {isRead}");
             }
         }
+
+        // Helper function to help recommend a book based on graph
+        static void GraphRecommendation() 
+        {
+            string response;
+
+            Console.WriteLine("What book do you want a recommendation based on? ([Title]:[Author]):");
+            string[] b = (Console.ReadLine() ?? "").Split(":");
+
+            if (b.Length == 2)
+            {
+                // Get recommendations based off of the book relationship graph
+                var recs = bookRelationships.bookRelationshipGraph.GetEdges().Where(x =>x.From.Data?.Title == b[0] &&  x.From.Data.Author == b[1]).OrderByDescending(x => x.Weight).ToList();
+                if (recs.Count > 0)
+                {
+                    int recId = 0;
+                    while (recId != recs.Count)
+                    {
+                        Console.WriteLine($"☐ {recs[recId].To.Data?.Title} by {string.Join(", ", recs[recId].To.Data?.Author)} \n\tGenre: {recs[recId].To.Data?.Genre} \n\tPopularity: {recs[recId].To.Data?.Popularity}");
+                        recId++;
+                        
+                        if (recId != recs.Count)
+                        {
+                            do
+                            {
+                                Console.WriteLine("Would you like another recommendation? (y/n):");
+                                response = (Console.ReadLine() ?? "").Trim().ToLower();
+                            } while (response != "y" && response != "n");
+                            
+                            if (response == "n")
+                                break;
+                        }
+                    }
+                }
+                else
+                    Console.WriteLine("No recommendations could be made based on this book.");
+            }
+        }
+        
 
         // Helper function to build the tree for recommendations
         static TreeNode BuildTree()

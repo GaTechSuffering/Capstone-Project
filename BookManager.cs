@@ -8,18 +8,41 @@ namespace BookRentingApp
     {
         public int DaysRemaining { get; set; }
         public int Price { get; set; }
+        public UserAccount? CurrentRenter { get; private set; }
         
         // Method to rent a book
-        public void RentBook(string bookTitle, int rentalDays)
+        public void RentBook(UserAccount user, int rentalDays)
         {
+            Book lastBook = user.Rented[^1];
+            string bookTitle = lastBook.Title;
+
             if (DaysRemaining > 0)
             {
-                Console.WriteLine($"{bookTitle} is already rented. {DaysRemaining} day(s) left.");
+                Console.WriteLine($"{DaysRemaining} day(s) remaining.");
             }
             else
             {
                 DaysRemaining = rentalDays;
-                Console.WriteLine($"\"{bookTitle}\" is being rented for {rentalDays} day(s).");
+                CurrentRenter = user;
+                Console.WriteLine($"\"{bookTitle}\" is being rented for {rentalDays} day(s) by {user.FirstName}.");
+
+                if (user.IsMember)
+                    Console.WriteLine("Thank you for being a valued member!");
+            }
+        }
+
+        // Method to simulate passage of time or returns
+        public void AdvanceDay(string bookTitle)
+        {
+            if (DaysRemaining > 0)
+            {
+                DaysRemaining--;
+
+                if (DaysRemaining == 0)
+                {
+                    Console.WriteLine($"Book \"{bookTitle}\" is now available.");
+                    CurrentRenter = null;
+                }
             }
         }
 
