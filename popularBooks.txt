@@ -1,0 +1,17 @@
+Collins Suzanne;Sunrise on the Reaping;2025;Dystopian;10;1;1;false
+Bradbury Ray;Fahrenheit 451;2012;Dystopian;10;1;1;false
+Collins Suzanne;The Ballad of Songbirds and Snakes;2020;Dystopian;10;1;1;false
+Collins Suzanne;The Hunger Games;2008;Dystopian;10;1;1;false
+Collins Suzanne;Catching Fire;2009;Dystopian;10;1;1;false
+Collins Suzanne;Mockingjay;2010;Dystopian;10;1;1;false
+Rowling J.K.;Harry Potter and the Sorcerer's Stone;1997;Fantasy;9;1;1;false
+Rowling J.K.;Harry Potter and the Chamber of Secrets;1998;Fantasy;10;1;1;false
+Rowling J.K.;Harry Potter and the Prisoner of Azkaban;1999;Fantasy;10;1;1;false
+Rowling J.K.;Harry Potter and the Goblet of Fire;2000;Fantasy;10;1;1;false
+Rowling J.K.;Harry Potter and the Order of the Phoenix;2003;Fantasy;10;1;1;false
+Rowling J.K.;Harry Potter and the Half-Blood Prince;2005;Fantasy;10;1;1;false
+Rowling J.K.;Harry Potter and the Deathly Hollows;2007;Fantasy;10;1;1;false
+Tolkien J.R.R.;The Lord of the Rings;1954;Fantasy;10;1;1;false
+Tolkien J.R.R.;The Hobbit;1937;Fantasy;9;1;1;false
+Carroll Lewis;Alice's Adventures in Wonderland;1865;Fantasy;10;1;1;false
+Card Orson Scott;Ender's Game;1985;Military Science Fiction;10;1;1;false
