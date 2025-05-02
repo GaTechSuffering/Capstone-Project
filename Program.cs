@@ -20,8 +20,9 @@ namespace BookRentingApp
             // Set up two dummy accounts for the rentalSystem
             List<Book> ownedBooks = BookLoader.LoadBooksFromFile("ownedBooks_John.txt");
             List<Book> wishlistBooks = BookLoader.LoadBooksFromFile("wishListBooks_John.txt");
-            List<Book> rentedBooks = new List<Book> ();
+            List<Book> rentedBooks = BookLoader.LoadBooksFromFile("rentedBooks_John.txt");
             currUser = new UserAccount("John", "Doe", 29, true, 10, ownedBooks, wishlistBooks, rentedBooks);
+
             // Assign to user's owned books
             currUser.OwnedBooks.AddRange(ownedBooks);
             // Assign to user's wishlisted books
@@ -34,6 +35,8 @@ namespace BookRentingApp
             // Secondary dummy account
             ownedBooks = BookLoader.LoadBooksFromFile("ownedBooks_Jane.txt");
             wishlistBooks = BookLoader.LoadBooksFromFile("wishListBooks_Jane.txt");
+            rentedBooks = BookLoader.LoadBooksFromFile("rentedBooks_Jane.txt");
+
             currUser = new UserAccount("Jane", "Darling", 25, false, 0, ownedBooks, wishlistBooks, rentedBooks);
             // Assign to user's owned books
             currUser.OwnedBooks.AddRange(ownedBooks);
@@ -99,6 +102,7 @@ namespace BookRentingApp
     
                 if (rentalSystem.ContainsKey(inputUsername))
                 {
+                    UserQueueManager.DequeueUser();
                     Console.WriteLine("User " + inputUsername + " selected!");
                     currSelect = rentalSystem[inputUsername];
                     UserQueueManager.EnqueueUser(currSelect);

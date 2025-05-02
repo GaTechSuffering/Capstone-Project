@@ -1,5 +1,3 @@
-using System;
-
 namespace BookRentingApp
 {
     public class UserAccount
@@ -24,9 +22,10 @@ namespace BookRentingApp
             Age = age;
             IsMember = isMember;
             MemberPrice = memberPrice;
-            OwnedBooks = new List<Book>();
-            Wishlist = new List<Book>();
-            Rented = new List<Book>();
+            OwnedBooks = ownedBooks;
+            Wishlist = wishList;
+            Rented = rented;
+
         }
 
         // Full name helper 
@@ -36,15 +35,15 @@ namespace BookRentingApp
         public void DisplayInfo()
         {
             Console.WriteLine(new string('-', 40));
-            System.Console.WriteLine($"Name: {FullName}");
-            System.Console.WriteLine($"Age: {Age}");
-            System.Console.WriteLine($"Membership Status: {(IsMember ? "Member" : "Guest")}");
-            System.Console.WriteLine($"Membership Cost: ${(IsMember ? 0 : 10)}");
-            System.Console.WriteLine($"Owned Books: ");
+            Console.WriteLine($"Name: {FullName}");
+            Console.WriteLine($"Age: {Age}");
+            Console.WriteLine($"Membership Status: {(IsMember ? "Member" : "Guest")}");
+            Console.WriteLine($"Membership Cost: ${(IsMember ? 0 : 10)}");
+            Console.WriteLine($"Owned Books: ");
             PrintBookList(OwnedBooks);
-            System.Console.WriteLine($"WishListed Books: ");
+            Console.WriteLine($"WishListed Books: ");
             PrintBookList(Wishlist);
-            System.Console.WriteLine($"Rented Books: ");
+            Console.WriteLine($"Rented Books: ");
             PrintBookList(Rented);
         }
 
