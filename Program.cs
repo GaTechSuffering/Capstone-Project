@@ -110,7 +110,10 @@ namespace BookRentingApp
         }
         
         static void DisplayUser() {
-            currSelect.DisplayInfo();
+            if (currSelect != null)
+                currSelect.DisplayInfo();
+            else
+                Console.WriteLine("No user selected.");
         }
 
         // Display the list of owned books to the currently selected user
