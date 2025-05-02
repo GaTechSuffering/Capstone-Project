@@ -3,3 +3,4 @@ Moore Alan;Watchmen;1986;Comic;10;2;2;true
 Gaiman Neil;The Sandman;1989;Fantasy;8;3;3;false
 Miller Frank;Batman: The Dark Knight Returns;1986;Comic;9;1;4;true
 Satrapi Marjane;Persepolis;2000;Autobiographical Comic;7;1;5;false
+Edgar Allen Poe;The Tell Tale Heart;0;Horror;2;-1;2;False

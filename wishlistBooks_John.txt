@@ -8,3 +8,4 @@ Salinger J.D.;The Catcher in the Rye;1951;Fiction;8;1;7;false
 Tolkien J.R.R.;The Hobbit;1937;Fantasy;10;3;8;true
 Bradbury Ray;Fahrenheit 451;1953;Science Fiction;8;1;9;false
 Melville Herman;Moby Dick;1851;Adventure;7;1;10;false
+Jane Doe;Hello;0;Horror;1;-1;1;False

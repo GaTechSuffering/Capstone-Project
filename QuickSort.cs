@@ -23,27 +23,26 @@ namespace BookRentingApp
 
         //implement the Partition function to partition the List to be sorted
         private static int Partition(List<Book> array, int lower, int upper, string? sortValue)
-        { 
-            int i = lower; 
-            int j = upper; 
+        {
             Book pivot = array[lower];
-            do 
-            { 
-                if (sortValue == null)
-                {
-                    while (array[i].CompareTo(pivot) < 0) { i++; } 
-                    while (array[j].CompareTo(pivot) > 0) { j--; } 
-                }
-                else
-                {
-                    while (array[i].CompareTo(pivot, sortValue) < 0) { i++; } 
-                    while (array[j].CompareTo(pivot, sortValue) > 0) { j--; } 
-                }
-                if (i >= j) { break; } 
-                Swap(array, i, j); 
-            } 
-            while (i <= j); 
-            return j; 
+            int i = lower - 1;
+            int j = upper + 1;
+
+            while (true)
+            {
+                do
+                    i++;
+                while ((sortValue == null ? array[i].CompareTo(pivot) : array[i].CompareTo(pivot, sortValue)) < 0);
+
+                do
+                    j--;
+                while ((sortValue == null ? array[j].CompareTo(pivot) : array[j].CompareTo(pivot, sortValue)) > 0);
+
+                if (i >= j)
+                    return j;
+
+                Swap(array, i, j);
+            }
         }
 
         //implement the Swap function to swap to items in a list
